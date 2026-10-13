@@ -3,7 +3,7 @@ description: $description
 version: '${version}'
 
 main: de.winniepat.limitlessLevels.LimitlessLevels
-api-version: '1.21.11'
+api-version: '1.16'
 load: POSTWORLD
 
 authors: [ WinniePatGG ]

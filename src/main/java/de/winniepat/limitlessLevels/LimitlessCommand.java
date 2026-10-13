@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -47,10 +48,18 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
-            case "effect" -> handleEffect(sender, args);
-            case "enchant" -> handleEnchant(sender, args);
-            case "reload" -> handleReload(sender);
-            default -> sendUsage(sender, label);
+            case "effect":
+                handleEffect(sender, args);
+                break;
+            case "enchant":
+                handleEnchant(sender, args);
+                break;
+            case "reload":
+                handleReload(sender);
+                break;
+            default:
+                sendUsage(sender, label);
+                break;
         }
 
         return true;
@@ -144,12 +153,13 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(MessageUtil.color(
                     "&cOnly players can enchant a held item."
             ));
             return;
         }
+        Player player = (Player) sender;
 
         if (args.length != 3) {
             sender.sendMessage(MessageUtil.color(
@@ -230,10 +240,10 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             if (sender.hasPermission("limitlesslevels.use")) {
-                StringUtil.copyPartialMatches(args[0], List.of("effect", "enchant"), completions);
+                StringUtil.copyPartialMatches(args[0], Arrays.asList("effect", "enchant"), completions);
             }
             if (sender.hasPermission("limitlesslevels.reload")) {
-                StringUtil.copyPartialMatches(args[0], List.of("reload"), completions);
+                StringUtil.copyPartialMatches(args[0], Arrays.asList("reload"), completions);
             }
             Collections.sort(completions);
             return completions;
