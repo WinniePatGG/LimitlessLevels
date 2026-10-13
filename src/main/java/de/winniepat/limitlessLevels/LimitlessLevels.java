@@ -23,9 +23,7 @@ public final class LimitlessLevels extends JavaPlugin {
             return;
         }
 
-        LimitlessCommand commandExecutor = new LimitlessCommand(
-                this, effectService, enchantmentService
-        );
+        LimitlessCommand commandExecutor = new LimitlessCommand(this, effectService, enchantmentService);
         command.setExecutor(commandExecutor);
         command.setTabCompleter(commandExecutor);
 

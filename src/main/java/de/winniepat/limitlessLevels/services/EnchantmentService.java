@@ -21,11 +21,7 @@ public final class EnchantmentService {
         this.plugin = plugin;
     }
 
-    public boolean enchantHeldItem(
-            Player player,
-            String enchantmentName,
-            int level
-    ) {
+    public boolean enchantHeldItem(Player player, String enchantmentName, int level) {
         if (level < 1 || level > plugin.getMaxLevel()) {
             return false;
         }

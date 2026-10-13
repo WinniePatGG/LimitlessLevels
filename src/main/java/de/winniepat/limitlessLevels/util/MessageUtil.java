@@ -20,13 +20,8 @@ public class MessageUtil {
     }
 
     public void send(CommandSender sender, String key, String... replacements) {
-        String prefix = plugin.getConfig().getString(
-                "messages.prefix", "&8[&aLimitlessLevels&8] &r"
-        );
-
-        String message = plugin.getConfig().getString(
-                "messages." + key, "&cMissing message: " + key
-        );
+        String prefix = plugin.getConfig().getString("messages.prefix", "&8[&aLimitlessLevels&8] &r");
+        String message = plugin.getConfig().getString("messages." + key, "&cMissing message: " + key);
 
         for (int i = 0;  i + 1 < replacements.length; i += 2) {
             message = message.replace("%" + replacements[i] + "%", replacements[i + 1]);
@@ -35,8 +30,7 @@ public class MessageUtil {
         sender.sendMessage(color(prefix + message));
     }
 
-    private static final String FONT_CHARS =
-            "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ\uD835\uDFE2\uD835\uDFE3\uD835\uDFE4\uD835\uDFE5\uD835\uDFE6\uD835\uDFE7\uD835\uDFE8\uD835\uDFE9\uD835\uDFEA\uD835\uDFEB";
+    private static final String FONT_CHARS = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ\uD835\uDFE2\uD835\uDFE3\uD835\uDFE4\uD835\uDFE5\uD835\uDFE6\uD835\uDFE7\uD835\uDFE8\uD835\uDFE9\uD835\uDFEA\uD835\uDFEB";
 
     public static String color(String message) {
         if (message == null || message.isEmpty()) {
@@ -135,17 +129,9 @@ public class MessageUtil {
     }
 
     private static char mapFont(char character) {
-        if (character >= 'a' && character <= 'z') {
-            return FONT_CHARS.charAt(character - 'a');
-        }
-
-        if (character >= 'A' && character <= 'Z') {
-            return FONT_CHARS.charAt(character - 'A');
-        }
-
-        if (character >= '0' && character <= '9') {
-            return FONT_CHARS.charAt(26 + (character - '0'));
-        }
+        if (character >= 'a' && character <= 'z') return FONT_CHARS.charAt(character - 'a');
+        if (character >= 'A' && character <= 'Z') return FONT_CHARS.charAt(character - 'A');
+        if (character >= '0' && character <= '9') return FONT_CHARS.charAt(26 + (character - '0'));
 
         return character;
     }
@@ -173,9 +159,6 @@ public class MessageUtil {
     }
 
     private static String hexToLegacy(String hex) {
-        return "&x&"
-                + hex.charAt(1) + "&" + hex.charAt(2) + "&"
-                + hex.charAt(3) + "&" + hex.charAt(4) + "&"
-                + hex.charAt(5) + "&" + hex.charAt(6);
+        return "&x&" + hex.charAt(1) + "&" + hex.charAt(2) + "&" + hex.charAt(3) + "&" + hex.charAt(4) + "&" + hex.charAt(5) + "&" + hex.charAt(6);
     }
 }

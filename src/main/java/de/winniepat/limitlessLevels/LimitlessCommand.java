@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,11 +25,7 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
     private final EnchantmentService enchantments;
     private final MessageUtil messages;
 
-    public LimitlessCommand(
-            LimitlessLevels plugin,
-            EffectService effects,
-            EnchantmentService enchantments
-    ) {
+    public LimitlessCommand(LimitlessLevels plugin, EffectService effects, EnchantmentService enchantments) {
         this.plugin = plugin;
         this.effects = effects;
         this.enchantments = enchantments;
@@ -36,12 +33,7 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(
-            CommandSender sender,
-            Command command,
-            String label,
-            String[] args
-    ) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             sendUsage(sender, label);
             return true;
@@ -72,9 +64,7 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length != 5) {
-            sender.sendMessage(MessageUtil.color(
-                    "&cUsage: /ll effect <player> <effect> <seconds> <level>"
-            ));
+            sender.sendMessage(MessageUtil.color("&cUsage: /ll effect <player> <effect> <seconds> <level>"));
             return;
         }
 
@@ -98,53 +88,28 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
         }
 
         if (level < 1 || level > plugin.getMaxLevel()) {
-            messages.send(
-                    sender,
-                    "invalid-level",
-                    "max",
-                    String.valueOf(plugin.getMaxLevel())
-            );
+            messages.send(sender, "invalid-level", "max", String.valueOf(plugin.getMaxLevel()));
             return;
         }
 
-        if (duration < 1
-                || duration > plugin.getMaxDurationSeconds()) {
+        if (duration < 1 || duration > plugin.getMaxDurationSeconds()) {
             messages.send(sender, "invalid-duration");
             return;
         }
 
         if (effects.findEffect(args[2]) == null) {
-            messages.send(
-                    sender,
-                    "invalid-effect",
-                    "value",
-                    args[2]
-            );
+            messages.send(sender, "invalid-effect", "value", args[2]);
             return;
         }
 
-        boolean applied = effects.apply(
-                target,
-                args[2],
-                duration,
-                level
-        );
+        boolean applied = effects.apply(target, args[2], duration, level);
 
         if (!applied) {
-            sender.sendMessage(MessageUtil.color(
-                    "&cThe effect could not be applied."
-            ));
+            sender.sendMessage(MessageUtil.color("&cThe effect could not be applied."));
             return;
         }
 
-        messages.send(
-                sender,
-                "effect-applied",
-                "effect", args[2],
-                "level", String.valueOf(level),
-                "player", target.getName(),
-                "duration", String.valueOf(duration)
-        );
+        messages.send(sender, "effect-applied", "effect", args[2], "level", String.valueOf(level), "player", target.getName(), "duration", String.valueOf(duration));
     }
 
     private void handleEnchant(CommandSender sender, String[] args) {
@@ -154,17 +119,13 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageUtil.color(
-                    "&cOnly players can enchant a held item."
-            ));
+            sender.sendMessage(MessageUtil.color("&cOnly players can enchant a held item."));
             return;
         }
         Player player = (Player) sender;
 
         if (args.length != 3) {
-            sender.sendMessage(MessageUtil.color(
-                    "&cUsage: /ll enchant <enchantment> <level>"
-            ));
+            sender.sendMessage(MessageUtil.color("&cUsage: /ll enchant <enchantment> <level>"));
             return;
         }
 
@@ -173,19 +134,12 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
         try {
             level = Integer.parseInt(args[2]);
         } catch (NumberFormatException exception) {
-            sender.sendMessage(MessageUtil.color(
-                    "&cLevel must be a whole number."
-            ));
+            sender.sendMessage(MessageUtil.color("&cLevel must be a whole number."));
             return;
         }
 
         if (level < 1 || level > plugin.getMaxLevel()) {
-            messages.send(
-                    sender,
-                    "invalid-level",
-                    "max",
-                    String.valueOf(plugin.getMaxLevel())
-            );
+            messages.send(sender,"invalid-level", "max", String.valueOf(plugin.getMaxLevel()));
             return;
         }
 
@@ -195,28 +149,16 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
         }
 
         if (enchantments.findEnchantment(args[1]) == null) {
-            messages.send(
-                    sender,
-                    "invalid-enchantment",
-                    "value",
-                    args[1]
-            );
+            messages.send(sender, "invalid-enchantment", "value", args[1]);
             return;
         }
 
         if (!enchantments.enchantHeldItem(player, args[1], level)) {
-            sender.sendMessage(MessageUtil.color(
-                    "&cThe enchantment could not be applied."
-            ));
+            sender.sendMessage(MessageUtil.color("&cThe enchantment could not be applied."));
             return;
         }
 
-        messages.send(
-                sender,
-                "enchant-applied",
-                "enchantment", args[1],
-                "level", String.valueOf(level)
-        );
+        messages.send(sender,"enchant-applied", "enchantment", args[1], "level", String.valueOf(level));
     }
 
     private void handleReload(CommandSender sender) {
@@ -230,21 +172,13 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(
-            CommandSender sender,
-            Command command,
-            String alias,
-            String[] args
-    ) {
+    public List<String> onTabComplete(@NonNull CommandSender sender, @NonNull Command command, @NonNull String alias, String[] args) {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            if (sender.hasPermission("limitlesslevels.use")) {
-                StringUtil.copyPartialMatches(args[0], Arrays.asList("effect", "enchant"), completions);
-            }
-            if (sender.hasPermission("limitlesslevels.reload")) {
-                StringUtil.copyPartialMatches(args[0], Arrays.asList("reload"), completions);
-            }
+            if (sender.hasPermission("limitlesslevels.use")) StringUtil.copyPartialMatches(args[0], Arrays.asList("effect", "enchant"), completions);
+            if (sender.hasPermission("limitlesslevels.reload")) StringUtil.copyPartialMatches(args[0], Arrays.asList("reload"), completions);
+
             Collections.sort(completions);
             return completions;
         }
@@ -252,9 +186,7 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
         String subcommand = args[0].toLowerCase(Locale.ROOT);
 
         if (subcommand.equals("effect")) {
-            if (!sender.hasPermission("limitlesslevels.use")) {
-                return completions;
-            }
+            if (!sender.hasPermission("limitlesslevels.use")) return completions;
 
             if (args.length == 2) {
                 List<String> players = new ArrayList<>();
@@ -264,21 +196,14 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
                 return filter(players, args[1]);
             }
 
-            if (args.length == 3) {
-                return filter(effects.getEffectNames(), args[2]);
-            }
+            if (args.length == 3) return filter(effects.getEffectNames(), args[2]);
 
             return completions;
         }
 
         if (subcommand.equals("enchant")) {
-            if (!sender.hasPermission("limitlesslevels.use")) {
-                return completions;
-            }
-
-            if (args.length == 2) {
-                return filter(enchantments.getEnchantmentNames(), args[1]);
-            }
+            if (!sender.hasPermission("limitlesslevels.use")) return completions;
+            if (args.length == 2) return filter(enchantments.getEnchantmentNames(), args[1]);
 
             return completions;
         }
@@ -294,17 +219,9 @@ public final class LimitlessCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendUsage(CommandSender sender, String label) {
-        sender.sendMessage(MessageUtil.color(
-                "&aLimitlessLevels &7- commands"
-        ));
-        sender.sendMessage(MessageUtil.color(
-                "&e/" + label + " effect <player> <effect> <seconds> <level>"
-        ));
-        sender.sendMessage(MessageUtil.color(
-                "&e/" + label + " enchant <enchantment> <level>"
-        ));
-        sender.sendMessage(MessageUtil.color(
-                "&e/" + label + " reload"
-        ));
+        sender.sendMessage(MessageUtil.color("&aLimitlessLevels &7- commands"));
+        sender.sendMessage(MessageUtil.color("&e/" + label + " effect <player> <effect> <seconds> <level>"));
+        sender.sendMessage(MessageUtil.color("&e/" + label + " enchant <enchantment> <level>"));
+        sender.sendMessage(MessageUtil.color("&e/" + label + " reload"));
     }
 }
