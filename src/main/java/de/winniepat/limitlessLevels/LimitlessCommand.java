@@ -7,11 +7,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
-public final class LimitlessCommand implements CommandExecutor {
+public final class LimitlessCommand implements CommandExecutor, TabCompleter {
 
     private final LimitlessLevels plugin;
     private final EffectService effects;
@@ -212,6 +217,70 @@ public final class LimitlessCommand implements CommandExecutor {
 
         plugin.reloadConfig();
         messages.send(sender, "reloaded");
+    }
+
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender,
+            Command command,
+            String alias,
+            String[] args
+    ) {
+        List<String> completions = new ArrayList<>();
+
+        if (args.length == 1) {
+            if (sender.hasPermission("limitlesslevels.use")) {
+                StringUtil.copyPartialMatches(args[0], List.of("effect", "enchant"), completions);
+            }
+            if (sender.hasPermission("limitlesslevels.reload")) {
+                StringUtil.copyPartialMatches(args[0], List.of("reload"), completions);
+            }
+            Collections.sort(completions);
+            return completions;
+        }
+
+        String subcommand = args[0].toLowerCase(Locale.ROOT);
+
+        if (subcommand.equals("effect")) {
+            if (!sender.hasPermission("limitlesslevels.use")) {
+                return completions;
+            }
+
+            if (args.length == 2) {
+                List<String> players = new ArrayList<>();
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    players.add(player.getName());
+                }
+                return filter(players, args[1]);
+            }
+
+            if (args.length == 3) {
+                return filter(effects.getEffectNames(), args[2]);
+            }
+
+            return completions;
+        }
+
+        if (subcommand.equals("enchant")) {
+            if (!sender.hasPermission("limitlesslevels.use")) {
+                return completions;
+            }
+
+            if (args.length == 2) {
+                return filter(enchantments.getEnchantmentNames(), args[1]);
+            }
+
+            return completions;
+        }
+
+        return completions;
+    }
+
+    private List<String> filter(List<String> options, String token) {
+        List<String> result = new ArrayList<>();
+        StringUtil.copyPartialMatches(token == null ? "" : token, options, result);
+        Collections.sort(result);
+        return result;
     }
 
     private void sendUsage(CommandSender sender, String label) {

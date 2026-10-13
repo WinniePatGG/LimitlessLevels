@@ -2,11 +2,15 @@
 package de.winniepat.limitlessLevels.services;
 
 import de.winniepat.limitlessLevels.LimitlessLevels;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public final class EnchantmentService {
@@ -54,5 +58,17 @@ public final class EnchantmentService {
         }
 
         return Enchantment.getByKey(key);
+    }
+
+    public List<String> getEnchantmentNames() {
+        List<String> names = new ArrayList<>();
+        for (Enchantment enchantment : Bukkit.getRegistry(Enchantment.class)) {
+            NamespacedKey key = enchantment.getKey();
+            if (key != null && key.getKey() != null && !names.contains(key.getKey())) {
+                names.add(key.getKey());
+            }
+        }
+        Collections.sort(names);
+        return names;
     }
 }

@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public class EffectService {
@@ -64,5 +67,17 @@ public class EffectService {
         }
 
         return Bukkit.getRegistry(PotionEffectType.class).get(key);
+    }
+
+    public List<String> getEffectNames() {
+        List<String> names = new ArrayList<>();
+        for (PotionEffectType type : Bukkit.getRegistry(PotionEffectType.class)) {
+            NamespacedKey key = type.getKey();
+            if (key != null && key.getKey() != null && !names.contains(key.getKey())) {
+                names.add(key.getKey());
+            }
+        }
+        Collections.sort(names);
+        return names;
     }
 }
