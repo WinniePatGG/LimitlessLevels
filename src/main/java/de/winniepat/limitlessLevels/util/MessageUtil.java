@@ -44,6 +44,7 @@ public class MessageUtil {
         }
 
         int total = countVisible(message);
+        int gradientLimit = countVisibleUntilBracket(message);
         StringBuilder output = new StringBuilder();
         int index = 0;
         int i = 0;
@@ -64,8 +65,20 @@ public class MessageUtil {
                 continue;
             }
 
-            String hexColor = gradientColor(index, total);
-            output.append(hexToLegacy(hexColor));
+            if (character == '[' || character == ']') {
+                output.append("&7");
+                output.append(character);
+                index++;
+                i++;
+                continue;
+            }
+
+            if (index < gradientLimit) {
+                String hexColor = gradientColor(
+                        index, gradientLimit <= 1 ? 1 : gradientLimit
+                );
+                output.append(hexToLegacy(hexColor));
+            }
             output.append(mapFont(character));
             index++;
             i++;
@@ -88,6 +101,32 @@ public class MessageUtil {
 
             if (!Character.isWhitespace(character)) {
                 count++;
+            }
+            i++;
+        }
+
+        return count;
+    }
+
+    private static int countVisibleUntilBracket(String message) {
+        int count = 0;
+        boolean stopped = false;
+        int i = 0;
+
+        while (i < message.length() && !stopped) {
+            char character = message.charAt(i);
+
+            if (character == '&' && i + 1 < message.length()) {
+                i += 2;
+                continue;
+            }
+
+            if (!Character.isWhitespace(character)) {
+                count++;
+            }
+
+            if (character == ']') {
+                stopped = true;
             }
             i++;
         }
