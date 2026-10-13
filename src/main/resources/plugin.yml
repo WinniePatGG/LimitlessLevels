@@ -1,0 +1,24 @@
+name: LimitlessLevels
+description: $description
+version: '${version}'
+
+main: de.winniepat.limitlessLevels.LimitlessLevels
+api-version: '1.21.11'
+load: POSTWORLD
+
+authors: [ WinniePatGG ]
+website: https://winniepat.de
+
+commands:
+  limitlesslevels:
+    description: Main command for LimitlessLevels
+    usage: /limitlesslevels <effect|enchant|reload>
+    aliases: [ll, limitless]
+
+permissions:
+  limitlesslevels.use:
+    description: Allows using LimitlessLevels commands.
+    default: op
+  limitlesslevels.reload:
+    description: Allows reloading the plugin configuration.
+    default: op

@@ -1,0 +1,19 @@
+
+# Highest permitted displayed effect/enchantment level.
+max-level: 255
+
+# Maximum effect duration, in seconds.
+max-duration-seconds: 1000000
+
+messages:
+  prefix: "&8[&aLimitlessLevels&8] &r"
+  no-permission: "&cYou do not have permission to do that."
+  player-not-found: "&cThat player is not online."
+  invalid-level: "&cLevel must be between 1 and %max%."
+  invalid-duration: "&cDuration must be a positive number."
+  invalid-effect: "&cUnknown potion effect: %value%"
+  invalid-enchantment: "&cUnknown enchantment: %value%"
+  hold-item: "&cYou must hold an item in your main hand."
+  effect-applied: "&aApplied %effect% %level% to %player% for %duration% seconds."
+  enchant-applied: "&aApplied %enchantment% %level% to your held item."
+  reloaded: "&aConfiguration reloaded."
